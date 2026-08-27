@@ -9,6 +9,31 @@
     head.innerHTML='<th>Cód.</th><th>Descrição</th><th>UN</th><th>Qtd</th><th class="purchase-internal">Preço compra</th><th>Preço venda</th><th>Desc. %</th><th>Total</th><th class="quote-actions"></th>';
   }
 
+  // Reforça o autocomplete na V2.4 e evita perda dos handlers após atualização.
+  window.clientSuggestions=function(q){
+    q=norm(q);
+    const a=q?db.clients.filter(c=>norm([c.codigo,c.nome_fantasia,c.razao_social,c.cnpj_cpf].join(' ')).includes(q)).slice(0,10):[];
+    $('clientSugs').innerHTML=a.map(c=>`<div class="sug" data-client-id="${c.id}"><b>${esc(c.nome_fantasia)}</b><br><span class="muted">${esc(c.codigo)} • ${esc(c.cnpj_cpf)}</span></div>`).join('');
+    $('clientSugs').classList.toggle('show',a.length>0);
+    $('clientSugs').querySelectorAll('[data-client-id]').forEach(el=>el.onclick=()=>selectClient(el.dataset.clientId));
+  };
+
+  window.productSuggestions=function(q){
+    q=norm(q);
+    const a=q?db.products.filter(p=>norm([p.codigo,p.identificacao,p.descricao,p.categoria].join(' ')).includes(q)).slice(0,12):[];
+    $('productSugs').innerHTML=a.map(p=>`<div class="sug" data-product-id="${p.id}"><b>${esc(p.descricao)}</b><br><span class="muted">${esc(p.codigo)} • ${esc(p.unidade)} • ${money(p.preco_venda)}</span></div>`).join('');
+    $('productSugs').classList.toggle('show',a.length>0);
+    $('productSugs').querySelectorAll('[data-product-id]').forEach(el=>el.onclick=()=>addProduct(el.dataset.productId));
+  };
+
+  function bindQuoteSearches(){
+    const client=$('clientSearch'), product=$('productSearch');
+    if(client) client.oninput=()=>window.clientSuggestions(client.value);
+    if(product) product.oninput=()=>window.productSuggestions(product.value);
+  }
+  bindQuoteSearches();
+  window.addEventListener('load',bindQuoteSearches);
+
   window.openProduct=function(id=''){
     const p=db.products.find(x=>x.id===id)||{};
     const opts='<option value="">Sem fornecedor</option>'+db.suppliers.map(s=>`<option value="${s.id}" ${p.fornecedor_padrao_id===s.id?'selected':''}>${esc(s.codigo)} - ${esc(s.nome_fantasia)}</option>`).join('');
@@ -57,7 +82,6 @@
     calcQuote();
   };
 
-  const originalUpdItem=window.updItem;
   window.updItem=function(k,f,v){
     if(f==='preco_compra_unitario' && String(v).trim()==='')quote.items[k][f]=null;
     else quote.items[k][f]=n(v);
