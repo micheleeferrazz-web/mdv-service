@@ -14,11 +14,17 @@
  <div class="login-card">
   <div class="brandrow"><div class="logo">MDV</div><div><h1>MDV Service</h1><p>Sistema Comercial V2.4 • Compra e Venda</p></div></div>
   <div class="notice">O acesso usa o Supabase Auth. Os dados de clientes, produtos, orçamentos e vendas ficam no banco online.</div>
-  <div class="auth-tabs"><button id="tLogin" class="btn primary" onclick="setAuthMode('login')">Entrar</button><button id="tSignup" class="btn ghost" onclick="setAuthMode('signup')">Criar acesso</button></div>
-  <div><label>E-mail</label><input id="email" class="input" type="email" autocomplete="email"></div>
-  <div style="margin-top:10px"><label>Senha</label><input id="password" class="input" type="password" autocomplete="current-password"></div>
-  <button id="authBtn" class="btn primary" style="width:100%;margin-top:14px" onclick="submitAuth()">Entrar</button>
-  <p id="authHelp" class="muted" style="font-size:12px;line-height:1.5">Entre com seu usuário do sistema.</p>
+  <div id="authForm">
+   <div class="auth-tabs"><button id="tLogin" class="btn primary" onclick="setAuthMode('login')">Entrar</button><button id="tSignup" class="btn ghost" onclick="setAuthMode('signup')">Criar acesso</button></div>
+   <div><label>E-mail</label><input id="email" class="input" type="email" autocomplete="email"></div>
+   <div style="margin-top:10px"><label>Senha</label><input id="password" class="input" type="password" autocomplete="current-password"></div>
+   <button id="authBtn" class="btn primary" style="width:100%;margin-top:14px" onclick="submitAuth()">Entrar</button>
+   <p id="authHelp" class="muted" style="font-size:12px;line-height:1.5">Entre com seu usuário do sistema.</p>
+  </div>
+  <div id="accessMessage" class="hidden">
+   <div id="accessNotice" class="notice"></div>
+   <button class="btn ghost" style="width:100%;margin-top:14px" onclick="logout()">Sair</button>
+  </div>
  </div>
 </div>
 <div id="app" class="app hidden">
@@ -32,13 +38,14 @@
    <button data-page="suppliers">⚙ <span>Fornecedores</span></button>
    <button data-page="quotes">🧾 <span>Orçamentos</span></button>
    <button data-page="sales">✓ <span>Vendas</span></button>
+   <button id="adminNav" class="hidden" data-page="users">🔐 <span>Usuários</span></button>
   </nav>
   <div class="sidefoot">Supabase/PostgreSQL<br><span id="userMini"></span></div>
  </aside>
  <main class="main">
   <div class="top">
    <div><h2 id="pageTitle">Painel comercial</h2><p id="pageSub">Dados sincronizados online.</p></div>
-   <div class="status"><span class="badge">● Supabase conectado</span><button class="btn ghost no-print" onclick="loadAll()">Sincronizar</button><button class="btn ghost no-print" onclick="logout()">Sair</button></div>
+   <div class="status"><span class="badge">● Supabase conectado</span><button id="adminTopBtn" class="btn ghost no-print hidden" onclick="go('users')">Usuários</button><button class="btn ghost no-print" onclick="loadAll()">Sincronizar</button><button class="btn ghost no-print" onclick="logout()">Sair</button></div>
   </div>
   <section class="page active" id="dashboard">
    <div class="cards">
@@ -86,6 +93,7 @@
   <section class="page" id="suppliers"><div class="card"><div class="section"><h3>Fornecedores</h3><button class="btn primary" onclick="openSupplier()">+ Novo fornecedor</button></div><div class="table-wrap"><table><thead><tr><th>Código</th><th>Nome</th><th>Categoria</th><th>Telefone</th><th>Cidade/UF</th><th>Status</th><th>Ações</th></tr></thead><tbody id="supplierTable"></tbody></table></div></div></section>
   <section class="page" id="quotes"><div class="card"><div class="section"><h3>Orçamentos</h3><button class="btn primary" onclick="newQuote();go('quote')">+ Novo orçamento</button></div><div class="toolbar"><input id="quoteFilter" class="input" placeholder="Nº ou cliente..." style="max-width:420px"><select id="quoteStatusFilter" class="select" style="max-width:260px"><option value="">Todos os status</option><option value="ABERTOS">Abertos / Em negociação</option><option value="PENDENTES">Pendentes de venda</option><option value="FINALIZADOS">Finalizados</option><option value="CANCELADOS">Cancelados</option><option value="REPROVADOS">Reprovados</option></select></div><div class="table-wrap"><table><thead><tr><th>Nº</th><th>Data</th><th>Cliente</th><th>Rev.</th><th>Valor atual</th><th>Status</th><th>Ações</th></tr></thead><tbody id="quoteTable"></tbody></table></div></div></section>
   <section class="page" id="sales"><div class="card"><div class="section"><h3>Vendas / Pedidos</h3></div><div class="toolbar"><input id="saleFilter" class="input" placeholder="Nº venda, orçamento, cliente..." style="max-width:520px"></div><div class="table-wrap"><table><thead><tr><th>Nº venda</th><th>Data</th><th>Orçamento</th><th>Cliente</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody id="saleTable"></tbody></table></div></div></section>
+  <section class="page" id="users"><div class="card"><div class="section"><div><h3>Aprovação de usuários</h3><p class="muted">Novos cadastros só acessam o sistema após aprovação.</p></div><button class="btn ghost" onclick="loadUsers()">Atualizar</button></div><div class="table-wrap"><table><thead><tr><th>E-mail</th><th>Cadastro</th><th>Perfil</th><th>Status</th><th>Ações</th></tr></thead><tbody id="userTable"></tbody></table></div></div></section>
  </main>
 </div>
 <div id="modal" class="modal"><div class="modal-card"><div class="modal-head"><h3 id="modalTitle"></h3><button class="close" onclick="closeModal()">×</button></div><div id="modalBody"></div></div></div>
@@ -103,5 +111,6 @@
 <script src="app4.js"></script>
 <script src="app5.js"></script>
 <script src="app6.js"></script>
+<script src="app7.js"></script>
 </body>
 </html>
