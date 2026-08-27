@@ -12,7 +12,7 @@
 <body>
 <div id="login" class="login">
  <div class="login-card">
-  <div class="brandrow"><div class="logo">MDV</div><div><h1>MDV Service</h1><p>Sistema Comercial V2.3 • Mobile/PWA</p></div></div>
+  <div class="brandrow"><div class="logo">MDV</div><div><h1>MDV Service</h1><p>Sistema Comercial V2.4 • Compra e Venda</p></div></div>
   <div class="notice">O acesso usa o Supabase Auth. Os dados de clientes, produtos, orçamentos e vendas ficam no banco online.</div>
   <div class="auth-tabs"><button id="tLogin" class="btn primary" onclick="setAuthMode('login')">Entrar</button><button id="tSignup" class="btn ghost" onclick="setAuthMode('signup')">Criar acesso</button></div>
   <div><label>E-mail</label><input id="email" class="input" type="email" autocomplete="email"></div>
@@ -23,7 +23,7 @@
 </div>
 <div id="app" class="app hidden">
  <aside class="side">
-  <div class="brand"><div class="logo">MDV</div><div class="txt"><h1>MDV Service</h1><small>Sistema Comercial V2.3</small></div></div>
+  <div class="brand"><div class="logo">MDV</div><div class="txt"><h1>MDV Service</h1><small>Sistema Comercial V2.4</small></div></div>
   <nav class="nav">
    <button class="active" data-page="dashboard">⌂ <span>Painel</span></button>
    <button data-page="quote">＋ <span>Novo Orçamento</span></button>
@@ -71,7 +71,7 @@
     </div>
     <div class="section" style="margin-top:20px"><h3>Itens</h3></div>
     <div class="toolbar quote-actions"><div class="searchbox" style="flex:1;min-width:280px"><input id="productSearch" class="input" autocomplete="off" placeholder="Pesquisar produto..."><div id="productSugs" class="sugs"></div></div><button class="btn gold" onclick="openProduct()">+ Novo produto</button></div>
-    <div class="table-wrap"><table class="quote-table"><thead><tr><th>Cód.</th><th>Descrição</th><th>UN</th><th>Qtd</th><th>Preço</th><th>Desc. %</th><th>Total</th><th class="quote-actions"></th></tr></thead><tbody id="quoteItems"></tbody></table></div>
+    <div class="table-wrap"><table class="quote-table"><thead><tr><th>Cód.</th><th>Descrição</th><th>UN</th><th>Qtd</th><th class="purchase-internal">Preço compra</th><th>Preço venda</th><th>Desc. %</th><th>Total</th><th class="quote-actions"></th></tr></thead><tbody id="quoteItems"></tbody></table></div>
     <div class="totals">
       <div class="total-line"><span>Subtotal</span><b id="qSubtotal">R$ 0,00</b></div>
       <div class="total-line"><span>Desconto geral %</span><input id="qDiscount" class="input" type="number" min="0" max="100" step="0.01" value="0" style="width:110px"></div>
@@ -82,7 +82,7 @@
    </div>
   </section>
   <section class="page" id="clients"><div class="card"><div class="section"><h3>Clientes</h3><button class="btn primary" onclick="openClient()">+ Novo cliente</button></div><div class="toolbar"><input id="clientFilter" class="input" placeholder="Pesquisar..." style="max-width:520px"></div><div class="table-wrap"><table><thead><tr><th>Código</th><th>Nome</th><th>CNPJ/CPF</th><th>Cidade/UF</th><th>Telefone</th><th>Status</th><th>Ações</th></tr></thead><tbody id="clientTable"></tbody></table></div></div></section>
-  <section class="page" id="products"><div class="card"><div class="section"><h3>Produtos</h3><button class="btn primary" onclick="openProduct()">+ Novo produto</button></div><div class="toolbar"><input id="productFilter" class="input" placeholder="Pesquisar..." style="max-width:600px"></div><div class="table-wrap"><table><thead><tr><th>Código</th><th>Identificação</th><th>Descrição</th><th>Categoria</th><th>UN</th><th>Preço</th><th>Status</th><th>Ações</th></tr></thead><tbody id="productTable"></tbody></table></div></div></section>
+  <section class="page" id="products"><div class="card"><div class="section"><h3>Produtos</h3><button class="btn primary" onclick="openProduct()">+ Novo produto</button></div><div class="toolbar"><input id="productFilter" class="input" placeholder="Pesquisar..." style="max-width:600px"></div><div class="table-wrap"><table><thead><tr><th>Código</th><th>Identificação</th><th>Descrição</th><th>Categoria</th><th>UN</th><th>Preço venda</th><th>Status</th><th>Ações</th></tr></thead><tbody id="productTable"></tbody></table></div></div></section>
   <section class="page" id="suppliers"><div class="card"><div class="section"><h3>Fornecedores</h3><button class="btn primary" onclick="openSupplier()">+ Novo fornecedor</button></div><div class="table-wrap"><table><thead><tr><th>Código</th><th>Nome</th><th>Categoria</th><th>Telefone</th><th>Cidade/UF</th><th>Status</th><th>Ações</th></tr></thead><tbody id="supplierTable"></tbody></table></div></div></section>
   <section class="page" id="quotes"><div class="card"><div class="section"><h3>Orçamentos</h3><button class="btn primary" onclick="newQuote();go('quote')">+ Novo orçamento</button></div><div class="toolbar"><input id="quoteFilter" class="input" placeholder="Nº ou cliente..." style="max-width:420px"><select id="quoteStatusFilter" class="select" style="max-width:260px"><option value="">Todos os status</option><option value="ABERTOS">Abertos / Em negociação</option><option value="PENDENTES">Pendentes de venda</option><option value="FINALIZADOS">Finalizados</option><option value="CANCELADOS">Cancelados</option><option value="REPROVADOS">Reprovados</option></select></div><div class="table-wrap"><table><thead><tr><th>Nº</th><th>Data</th><th>Cliente</th><th>Rev.</th><th>Valor atual</th><th>Status</th><th>Ações</th></tr></thead><tbody id="quoteTable"></tbody></table></div></div></section>
   <section class="page" id="sales"><div class="card"><div class="section"><h3>Vendas / Pedidos</h3></div><div class="toolbar"><input id="saleFilter" class="input" placeholder="Nº venda, orçamento, cliente..." style="max-width:520px"></div><div class="table-wrap"><table><thead><tr><th>Nº venda</th><th>Data</th><th>Orçamento</th><th>Cliente</th><th>Valor</th><th>Status</th><th>Ações</th></tr></thead><tbody id="saleTable"></tbody></table></div></div></section>
@@ -101,5 +101,6 @@
 <script src="app2.js"></script>
 <script src="app3.js"></script>
 <script src="app4.js"></script>
+<script src="app5.js"></script>
 </body>
 </html>
