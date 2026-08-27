@@ -1,0 +1,10 @@
+{
+  "name": "MDV Service - Sistema Comercial",
+  "short_name": "MDV Service",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#f4f7fb",
+  "theme_color": "#143a5e",
+  "description": "Sistema comercial MDV Service: clientes, produtos, orçamentos e vendas.",
+  "icons": []
+}
