@@ -20,3 +20,6 @@ async function setUserStatus(id,status){
   toast(status==='approved'?'Usuário aprovado.':'Usuário bloqueado.');
   await loadUsers();
 }
+
+// Carrega as melhorias do ciclo 1 sem alterar o núcleo atual do aplicativo.
+(()=>{const s=document.createElement('script');s.src='app8.js?v=20260904c1';s.onerror=()=>console.error('Falha ao carregar app8.js');document.body.appendChild(s)})();
